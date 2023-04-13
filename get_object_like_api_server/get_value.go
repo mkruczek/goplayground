@@ -1,7 +1,5 @@
 package get_object_like_api_server
 
-import "runtime"
-
 type valueRepository struct {
 	value entity
 }
@@ -27,12 +25,13 @@ func (h valueHandler) getObject() response {
 	return response{Name: m.Name, Value: m.Value}
 }
 
-func mainFunctionByValue() {
-	repo := valueRepository{value: entity{Name: "test", Value: 1}}
-	service := valueService{repo: repo}
-	handler := valueHandler{service: service}
+func mainFunctionByValue(n int) {
 
-	runtime.GC()
+	for i := 0; i < n; i++ {
+		repo := valueRepository{value: entity{Name: "test", Value: 1}}
+		service := valueService{repo: repo}
+		handler := valueHandler{service: service}
 
-	_ = handler.getObject()
+		_ = handler.getObject()
+	}
 }

@@ -1,7 +1,5 @@
 package get_object_like_api_server
 
-import "runtime"
-
 type pointerRepository struct {
 	value entity
 }
@@ -27,12 +25,13 @@ func (h pointerHandler) getObject() *response {
 	return &response{Name: m.Name, Value: m.Value}
 }
 
-func mainFunctionByPointer() {
-	repo := pointerRepository{value: entity{Name: "test", Value: 1}}
-	service := pointerService{repo: repo}
-	handler := pointerHandler{service: service}
+func mainFunctionByPointer(n int) {
 
-	runtime.GC()
+	for i := 0; i < n; i++ {
+		repo := pointerRepository{value: entity{Name: "test", Value: 1}}
+		service := pointerService{repo: repo}
+		handler := pointerHandler{service: service}
 
-	_ = handler.getObject()
+		_ = handler.getObject()
+	}
 }
