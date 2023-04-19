@@ -18,10 +18,10 @@ goos: linux
 goarch: amd64
 pkg: some-benchmark/sliceremove
 cpu: Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz
+BenchmarkOrderRemove
+BenchmarkOrderRemove-8   	170677959	         7.056 ns/op
 BenchmarkShiftRemove
-BenchmarkShiftRemove-8   	172545070	         6.884 ns/op
-BenchmarkPop
-BenchmarkPop-8           	1000000000	         0.6414 ns/op
+BenchmarkShiftRemove-8   	1000000000	         0.6205 ns/op     0.6414 ns/op
 */
 
 func BenchmarkOrderRemove(b *testing.B) {
