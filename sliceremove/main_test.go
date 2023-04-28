@@ -48,7 +48,7 @@ func BenchmarkShiftRemove(b *testing.B) {
 	}
 }
 
-func BenchmarkTestName(b *testing.B) {
+func BenchmarkOrderWithCopy(b *testing.B) {
 	s := []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j"}
 	for i := 0; i < b.N; i++ {
 		orderWithCopy(s, 2)
