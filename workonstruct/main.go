@@ -1,6 +1,6 @@
 package main
 
-//go tool compile -m ./main.go
+//go tool compile -m ./main_test.go
 
 func main() {
 	obj := NewPointer()
