@@ -9,6 +9,8 @@ import (
 // https://github.com/golang/go/blob/cd99385ff4a4b7534c71bb92420da6f462c5598e/src/runtime/map.go#L115
 // https://levelup.gitconnected.com/memory-allocation-and-performance-in-golang-maps-b267b5ad9217
 // https://hackernoon.com/some-insights-on-maps-in-golang-rm5v3ywh
+// https://www.youtube.com/watch?v=ACQs6mdylxo
+// https://www.youtube.com/watch?v=Tl7mi9QmLns
 
 func main() {
 
