@@ -78,3 +78,41 @@ func (n *Node) Remove(val int) *Node {
 	n.Right = n.Right.Remove(n.Val)
 	return n
 }
+
+func (n *Node) InOrder() []int {
+	if n == nil {
+		return nil
+	}
+
+	var result []int
+
+	result = append(result, n.Left.InOrder()...)
+	result = append(result, n.Val)
+	result = append(result, n.Right.InOrder()...)
+
+	return result
+}
+
+func (n *Node) Copy() *Node {
+	if n == nil {
+		return nil
+	}
+
+	return &Node{
+		Val:   n.Val,
+		Left:  n.Left.Copy(),
+		Right: n.Right.Copy(),
+	}
+}
+
+func (n *Node) Clean() {
+	if n == nil {
+		return
+	}
+
+	n.Left.Clean()
+	n.Right.Clean()
+	n.Val = 0
+	n.Left = nil
+	n.Right = nil
+}
