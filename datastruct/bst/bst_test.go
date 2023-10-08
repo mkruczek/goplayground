@@ -1,30 +1,35 @@
 package bst_test
 
 import (
-	"fmt"
 	"some-benchmark/datastruct/bst"
 	"testing"
 )
 
 func TestNode_Insert(t *testing.T) {
 
-	root := bst.NewNode(10)
+	root := bst.New(10)
 
 	root.Insert(5)
 	root.Insert(15)
 	root.Insert(8)
 	root.Insert(12)
 
-	printTree(root, "***", false)
+	bst.PrintTree(root, "***", false)
 
+	//should find
 	if !root.Search(8) {
 		t.Errorf("expected to find 8")
+	}
+
+	//should not find
+	if root.Search(81) {
+		t.Errorf("expected to not find 81")
 	}
 }
 
 func TestNode_InsertSameValue_ShouldStoreOnce(t *testing.T) {
 
-	root := bst.NewNode(10)
+	root := bst.New(10)
 
 	root.Insert(10)
 
@@ -38,30 +43,69 @@ func TestNode_InsertSameValue_ShouldStoreOnce(t *testing.T) {
 
 func TestNode_Remove(t *testing.T) {
 
-	root := bst.NewNode(10)
+	root := bst.New(10)
+
+	root.Insert(5)
+	root.Insert(15)
+	root.Insert(13)
+	root.Insert(8)
+	root.Insert(12)
+
+	root.Remove(5)
+
+	bst.PrintTree(root, "***", false)
+
+	if root.Right.Left.Val != 13 {
+		t.Errorf("expected right to be 12")
+	}
+}
+
+func TestNode_Remove_Root(t *testing.T) {
+
+	root := bst.New(10)
+
+	root.Insert(5)
+	root.Insert(15)
+	root.Insert(13)
+	root.Insert(8)
+	root.Insert(12)
+
+	root.Remove(10)
+
+	bst.PrintTree(root, "***", false)
+
+	if root.Right.Left.Val != 13 {
+		t.Errorf("expected right to be 12")
+	}
+}
+
+func TestNode_Min(t *testing.T) {
+
+	root := bst.New(10)
 
 	root.Insert(5)
 	root.Insert(15)
 	root.Insert(8)
 	root.Insert(12)
+	root.Insert(1)
 
-	root = root.Remove(15)
+	mi := root.Min().Val
 
-	if root.Right.Val != 12 {
-		t.Errorf("expected right to be 12")
+	if mi != 1 {
+		t.Errorf("expected min to be 5")
 	}
 }
 
 func TestNode_InOrder(t *testing.T) {
 
-	root := bst.NewNode(10)
+	root := bst.New(10)
 
 	root.Insert(5)
 	root.Insert(15)
 	root.Insert(8)
 	root.Insert(12)
 
-	got := root.InOrder()
+	got := root.AscOrder()
 
 	want := []int{5, 8, 10, 12, 15}
 
@@ -72,8 +116,28 @@ func TestNode_InOrder(t *testing.T) {
 	}
 }
 
+func TestNode_DestOrder(t *testing.T) {
+
+	root := bst.New(10)
+
+	root.Insert(5)
+	root.Insert(15)
+	root.Insert(8)
+	root.Insert(12)
+
+	got := root.DestOrder()
+
+	want := []int{15, 12, 10, 8, 5}
+
+	for i, v := range got {
+		if v != want[i] {
+			t.Errorf("expected %v, got %v", want, got)
+		}
+	}
+}
+
 func TestNode_Copy(t *testing.T) {
-	root := bst.NewNode(10)
+	root := bst.New(10)
 
 	root.Insert(5)
 	root.Insert(15)
@@ -82,8 +146,8 @@ func TestNode_Copy(t *testing.T) {
 
 	copied := root.Copy()
 
-	want := root.InOrder()
-	got := copied.InOrder()
+	want := root.AscOrder()
+	got := copied.AscOrder()
 
 	for i, v := range got {
 		if v != want[i] {
@@ -93,7 +157,7 @@ func TestNode_Copy(t *testing.T) {
 }
 
 func TestNode_Copy_ShouldNotBeSameInstance(t *testing.T) {
-	root := bst.NewNode(10)
+	root := bst.New(10)
 
 	root.Insert(5)
 	root.Insert(15)
@@ -116,7 +180,7 @@ func TestNode_Copy_ShouldNotBeSameInstance(t *testing.T) {
 }
 
 func TestNode_Clean(t *testing.T) {
-	root := bst.NewNode(10)
+	root := bst.New(10)
 
 	root.Insert(5)
 	root.Insert(15)
@@ -135,23 +199,5 @@ func TestNode_Clean(t *testing.T) {
 
 	if root.Val != 0 {
 		t.Errorf("expected val to be 0")
-	}
-}
-
-func printTree(node *bst.Node, prefix string, isLeft bool) {
-	if node != nil {
-		fmt.Printf("%s", prefix)
-		if isLeft {
-			fmt.Printf("|-- ")
-			prefix += "|   "
-		} else {
-			fmt.Printf("|-- ")
-			prefix += "    "
-		}
-
-		fmt.Println(node.Val)
-
-		printTree(node.Left, prefix, true)
-		printTree(node.Right, prefix, false)
 	}
 }

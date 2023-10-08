@@ -1,111 +1,152 @@
 package bst
 
-type Node struct {
+import "fmt"
+
+type node struct {
 	Val   int
-	Left  *Node
-	Right *Node
+	Left  *node
+	Right *node
 }
 
-func NewNode(val int) *Node {
-	return &Node{Val: val}
+func New(val int) *node {
+	return &node{
+		Val:   val,
+		Left:  nil,
+		Right: nil,
+	}
 }
 
-func (n *Node) Insert(val int) {
-
+func (n *node) Insert(val int) {
 	if n.Val == val {
 		return
 	}
 
-	if val <= n.Val {
+	//add to left
+	if n.Val > val {
 		if n.Left == nil {
-			n.Left = NewNode(val)
-		} else {
-			n.Left.Insert(val)
+			n.Left = &node{Val: val}
+			return
 		}
-	} else {
-		if n.Right == nil {
-			n.Right = NewNode(val)
-		} else {
-			n.Right.Insert(val)
-		}
+		n.Left.Insert(val)
+		return
 	}
 
+	//add to right
+	if n.Right == nil {
+		n.Right = &node{Val: val}
+		return
+	}
+
+	n.Right.Insert(val)
 }
 
-func (n *Node) Search(val int) bool {
+func (n *node) Search(val int) bool {
+
 	if n == nil {
 		return false
 	}
+
 	if n.Val == val {
 		return true
 	}
-	if val < n.Val {
+
+	if n.Val > val {
 		return n.Left.Search(val)
 	}
+
 	return n.Right.Search(val)
 }
 
-func (n *Node) Remove(val int) *Node {
+func (n *node) Remove(val int) *node {
+
 	if n == nil {
 		return nil
 	}
-	if val < n.Val {
+
+	if n.Val > val {
 		n.Left = n.Left.Remove(val)
 		return n
 	}
-	if val > n.Val {
+
+	if n.Val < val {
 		n.Right = n.Right.Remove(val)
 		return n
 	}
+
 	if n.Left == nil && n.Right == nil {
 		return nil
 	}
+
 	if n.Left == nil {
 		return n.Right
 	}
+
 	if n.Right == nil {
 		return n.Left
 	}
-	smallest := n.Right
-	for {
-		if smallest != nil && smallest.Left != nil {
-			smallest = smallest.Left
-		} else {
-			break
-		}
-	}
-	n.Val = smallest.Val
-	n.Right = n.Right.Remove(n.Val)
+
+	lower := n.Right.Min()
+	n.Val = lower.Val
+	n.Right = n.Right.Remove(lower.Val)
+
 	return n
 }
 
-func (n *Node) InOrder() []int {
+func (n *node) Min() *node {
+	if n == nil {
+		return nil
+	}
+
+	if n.Left == nil {
+		return n
+	}
+
+	return n.Left.Min()
+}
+
+func (n *node) AscOrder() []int {
+
 	if n == nil {
 		return nil
 	}
 
 	var result []int
 
-	result = append(result, n.Left.InOrder()...)
+	result = append(result, n.Left.AscOrder()...)
 	result = append(result, n.Val)
-	result = append(result, n.Right.InOrder()...)
+	result = append(result, n.Right.AscOrder()...)
 
 	return result
 }
 
-func (n *Node) Copy() *Node {
+func (n *node) DestOrder() []int {
+
 	if n == nil {
 		return nil
 	}
 
-	return &Node{
+	var result []int
+
+	result = append(result, n.Right.DestOrder()...)
+	result = append(result, n.Val)
+	result = append(result, n.Left.DestOrder()...)
+
+	return result
+}
+
+func (n *node) Copy() *node {
+	if n == nil {
+		return nil
+	}
+
+	return &node{
 		Val:   n.Val,
 		Left:  n.Left.Copy(),
 		Right: n.Right.Copy(),
 	}
 }
 
-func (n *Node) Clean() {
+func (n *node) Clean() {
 	if n == nil {
 		return
 	}
@@ -115,4 +156,22 @@ func (n *Node) Clean() {
 	n.Val = 0
 	n.Left = nil
 	n.Right = nil
+}
+
+func PrintTree(node *node, prefix string, isLeft bool) {
+	if node != nil {
+		fmt.Printf("%s", prefix)
+		if isLeft {
+			fmt.Printf("|-- ")
+			prefix += "|   "
+		} else {
+			fmt.Printf("|-- ")
+			prefix += "    "
+		}
+
+		fmt.Println(node.Val)
+
+		PrintTree(node.Left, prefix, true)
+		PrintTree(node.Right, prefix, false)
+	}
 }
