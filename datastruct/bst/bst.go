@@ -146,6 +146,19 @@ func (n *node) Copy() *node {
 	}
 }
 
+func (n *node) Mirror() *node {
+	if n == nil {
+		return nil
+	}
+
+	n.Left, n.Right = n.Right, n.Left
+
+	n.Left.Mirror()
+	n.Right.Mirror()
+
+	return n
+}
+
 func (n *node) Clean() {
 	if n == nil {
 		return

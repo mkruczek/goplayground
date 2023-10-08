@@ -156,6 +156,26 @@ func TestNode_Copy(t *testing.T) {
 	}
 }
 
+func TestNode_Mirror(t *testing.T) {
+	root := bst.New(10)
+
+	root.Insert(5)
+	root.Insert(15)
+	root.Insert(8)
+	root.Insert(12)
+
+	root.Mirror()
+
+	want := []int{15, 12, 10, 8, 5}
+	got := root.AscOrder()
+
+	for i, v := range got {
+		if v != want[i] {
+			t.Errorf("expected %v, got %v", want, got)
+		}
+	}
+}
+
 func TestNode_Copy_ShouldNotBeSameInstance(t *testing.T) {
 	root := bst.New(10)
 
