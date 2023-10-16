@@ -1,20 +1,21 @@
-package bst_test
+package bst
 
 import (
-	"some-benchmark/datastruct/bst"
+	"reflect"
+	"slices"
 	"testing"
 )
 
 func TestNode_Insert(t *testing.T) {
 
-	root := bst.New(10)
+	root := New(10)
 
 	root.Insert(5)
 	root.Insert(15)
 	root.Insert(8)
 	root.Insert(12)
 
-	bst.PrintTree(root, "***", false)
+	PrintTree(root, "***", false)
 
 	//should find
 	if !root.Search(8) {
@@ -29,7 +30,7 @@ func TestNode_Insert(t *testing.T) {
 
 func TestNode_InsertSameValue_ShouldStoreOnce(t *testing.T) {
 
-	root := bst.New(10)
+	root := New(10)
 
 	root.Insert(10)
 
@@ -43,7 +44,7 @@ func TestNode_InsertSameValue_ShouldStoreOnce(t *testing.T) {
 
 func TestNode_Remove(t *testing.T) {
 
-	root := bst.New(10)
+	root := New(10)
 
 	root.Insert(5)
 	root.Insert(15)
@@ -53,7 +54,7 @@ func TestNode_Remove(t *testing.T) {
 
 	root.Remove(5)
 
-	bst.PrintTree(root, "***", false)
+	PrintTree(root, "***", false)
 
 	if root.Right.Left.Val != 13 {
 		t.Errorf("expected right to be 12")
@@ -62,7 +63,7 @@ func TestNode_Remove(t *testing.T) {
 
 func TestNode_Remove_Root(t *testing.T) {
 
-	root := bst.New(10)
+	root := New(10)
 
 	root.Insert(5)
 	root.Insert(15)
@@ -72,7 +73,7 @@ func TestNode_Remove_Root(t *testing.T) {
 
 	root.Remove(10)
 
-	bst.PrintTree(root, "***", false)
+	PrintTree(root, "***", false)
 
 	if root.Right.Left.Val != 13 {
 		t.Errorf("expected right to be 12")
@@ -81,7 +82,7 @@ func TestNode_Remove_Root(t *testing.T) {
 
 func TestNode_Min(t *testing.T) {
 
-	root := bst.New(10)
+	root := New(10)
 
 	root.Insert(5)
 	root.Insert(15)
@@ -98,7 +99,7 @@ func TestNode_Min(t *testing.T) {
 
 func TestNode_InOrder(t *testing.T) {
 
-	root := bst.New(10)
+	root := New(10)
 
 	root.Insert(5)
 	root.Insert(15)
@@ -118,7 +119,7 @@ func TestNode_InOrder(t *testing.T) {
 
 func TestNode_DestOrder(t *testing.T) {
 
-	root := bst.New(10)
+	root := New(10)
 
 	root.Insert(5)
 	root.Insert(15)
@@ -137,7 +138,7 @@ func TestNode_DestOrder(t *testing.T) {
 }
 
 func TestNode_Copy(t *testing.T) {
-	root := bst.New(10)
+	root := New(10)
 
 	root.Insert(5)
 	root.Insert(15)
@@ -149,15 +150,14 @@ func TestNode_Copy(t *testing.T) {
 	want := root.AscOrder()
 	got := copied.AscOrder()
 
-	for i, v := range got {
-		if v != want[i] {
-			t.Errorf("expected %v, got %v", want, got)
-		}
+	if !slices.Equal(got, want) {
+		t.Errorf("expected %v, got %v", want, got)
 	}
+
 }
 
 func TestNode_Mirror(t *testing.T) {
-	root := bst.New(10)
+	root := New(10)
 
 	root.Insert(5)
 	root.Insert(15)
@@ -177,7 +177,7 @@ func TestNode_Mirror(t *testing.T) {
 }
 
 func TestNode_Copy_ShouldNotBeSameInstance(t *testing.T) {
-	root := bst.New(10)
+	root := New(10)
 
 	root.Insert(5)
 	root.Insert(15)
@@ -200,7 +200,7 @@ func TestNode_Copy_ShouldNotBeSameInstance(t *testing.T) {
 }
 
 func TestNode_Clean(t *testing.T) {
-	root := bst.New(10)
+	root := New(10)
 
 	root.Insert(5)
 	root.Insert(15)
@@ -219,5 +219,211 @@ func TestNode_Clean(t *testing.T) {
 
 	if root.Val != 0 {
 		t.Errorf("expected val to be 0")
+	}
+}
+
+func TestNode_LevelOrderTraversal(t *testing.T) {
+	root := New(10)
+
+	root.Insert(5)
+	root.Insert(15)
+	root.Insert(8)
+	root.Insert(12)
+	root.Insert(3)
+	root.Insert(1)
+
+	want := [][]int{{10}, {5, 15}, {3, 8, 12}, {1}}
+	got := root.LevelOrderTraversal()
+
+	for i, v := range got {
+		if !slices.Equal(v, want[i]) {
+			t.Errorf("expected %v, got %v", want, got)
+		}
+	}
+}
+
+func TestNode_LowestCommonAncestor(t *testing.T) {
+	root := New(10)
+
+	root.Insert(5)
+	root.Insert(15)
+	root.Insert(8)
+	root.Insert(12)
+	root.Insert(3)
+	root.Insert(1)
+
+	lca := root.LowestCommonAncestor2(New(1), New(12))
+
+	if lca.Val != 10 {
+		t.Errorf("expected lca to be 10")
+	}
+}
+
+func TestMaxValOnPath(t *testing.T) {
+	// Tworzymy testowe drzewo binarne.
+	//        10
+	//       /  \
+	//      5    15
+	//     / \   / \
+	//    3   7 12  18
+	root := &node{
+		Val: 10,
+		Left: &node{
+			Val:   5,
+			Left:  &node{Val: 3},
+			Right: &node{Val: 7},
+		},
+		Right: &node{
+			Val:   15,
+			Left:  &node{Val: 12},
+			Right: &node{Val: 18},
+		},
+	}
+
+	// Oczekiwana maksymalna wartość na ścieżce od korzenia do liścia: 10
+	expected := 18
+	result := Max(root)
+	if result != expected {
+		t.Errorf("Oczekiwano %d, otrzymano %d", expected, result)
+	}
+
+	// Test dla pustego drzewa.
+	result = Max(nil)
+	expected = 0
+	if result != expected {
+		t.Errorf("Oczekiwano %d, otrzymano %d", expected, result)
+	}
+
+	// Test dla drzewa z jednym węzłem.
+	singleNode := &node{Val: 42}
+	result = Max(singleNode)
+	expected = 42
+	if result != expected {
+		t.Errorf("Oczekiwano %d, otrzymano %d", expected, result)
+	}
+
+	// Dodaj inne testy według potrzeb.
+}
+
+func TestMinDepth(t *testing.T) {
+	// Tworzymy testowe drzewo binarne.
+	//        10
+	//       /  \
+	//      5    15
+	//     / \   / \
+	//    3   7 12  18
+	//             /
+	//			  17
+	root := &node{
+		Val: 10,
+		Left: &node{
+			Val:   5,
+			Left:  &node{Val: 3},
+			Right: &node{Val: 7},
+		},
+		Right: &node{
+			Val:   15,
+			Left:  &node{Val: 12},
+			Right: &node{Val: 18, Left: &node{Val: 17}},
+		},
+	}
+
+	// Oczekiwana minimalna głębokość: 2
+	expected := 3
+	result := MinDepth(root)
+	if result != expected {
+		t.Errorf("Oczekiwano %d, otrzymano %d", expected, result)
+	}
+
+	expected = 4
+	result = MaxDepth(root)
+	if result != expected {
+		t.Errorf("Oczekiwano %d, otrzymano %d", expected, result)
+	}
+
+	// Test dla pustego drzewa.
+	result = MinDepth(nil)
+	expected = 0
+	if result != expected {
+		t.Errorf("Oczekiwano %d, otrzymano %d", expected, result)
+	}
+
+	// Test dla drzewa z jednym węzłem.
+	singleNode := &node{Val: 42}
+	result = MinDepth(singleNode)
+	expected = 1
+	if result != expected {
+		t.Errorf("Oczekiwano %d, otrzymano %d", expected, result)
+	}
+
+	// Dodaj inne testy według potrzeb.
+}
+
+func TestFindKSmallestInOrder(t *testing.T) {
+	tests := []struct {
+		data     []int
+		k        int
+		expected []int
+	}{
+		{nil, 5, nil},
+		{[]int{4, 2, 6, 1, 3, 5, 7}, 3, []int{1, 2, 3}},
+		{[]int{10}, 1, []int{10}},
+		{[]int{8, 5, 12, 3, 7, 10, 14, 1, 4, 6, 9, 11, 13, 15}, 14, []int{1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}},
+	}
+
+	for i, test := range tests {
+		root := createBST(test.data)
+		result := FindKSmallestInOrder(root, test.k)
+		if !reflect.DeepEqual(result, test.expected) {
+			t.Errorf("Test %d failed. Expected: %v, Got: %v", i+1, test.expected, result)
+		}
+	}
+}
+
+func createBST(data []int) *node {
+	var root *node
+	for _, val := range data {
+		root = insertBST(root, val)
+	}
+	return root
+}
+
+func insertBST(root *node, val int) *node {
+	if root == nil {
+		return &node{Val: val}
+	}
+	if val < root.Val {
+		root.Left = insertBST(root.Left, val)
+	} else if val > root.Val {
+		root.Right = insertBST(root.Right, val)
+	}
+	return root
+}
+
+func TestIsSubTree(t *testing.T) {
+	tests := []struct {
+		data     []int
+		subtree  []int
+		expected bool
+	}{
+		{nil, nil, true},
+		{[]int{4, 2, 6, 1, 3, 5, 7}, []int{2, 1, 3}, true},
+		{[]int{4, 2, 6, 1, 3, 5, 7}, []int{2, 1, 3, 4}, false},
+		{[]int{4, 2, 6, 1, 3, 5, 7}, []int{2, 1, 3, 5}, false},
+		{[]int{4, 2, 6, 1, 3, 5, 7}, []int{2, 1, 3, 5, 6}, false},
+		{[]int{4, 2, 6, 1, 3, 5, 7}, []int{2, 1, 3, 5, 6, 7}, true},
+		{[]int{4, 2, 6, 1, 3, 5, 7}, []int{2, 1, 3, 5, 6, 7, 8}, false},
+		{[]int{4, 2, 6, 1, 3, 5, 7}, []int{2, 1, 3, 5, 6, 7, 8, 9}, false},
+		{[]int{4, 2, 6, 1, 3, 5, 7}, []int{2, 1, 3, 5, 6, 7, 8, 9, 10}, false},
+		{[]int{3, 4, 5, 1, 2}, []int{4, 1, 2}, true},
+	}
+
+	for i, test := range tests {
+		root := createBST(test.data)
+		subtree := createBST(test.subtree)
+		result := IsSubTree(root, subtree)
+		if result != test.expected {
+			t.Errorf("Test %d failed. Expected: %v, Got: %v", i+1, test.expected, result)
+		}
 	}
 }
