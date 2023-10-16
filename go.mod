@@ -1,3 +1,3 @@
-module some-benchmark
+module goplayground
 
 go 1.21
