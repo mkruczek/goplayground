@@ -427,3 +427,27 @@ func TestIsSubTree(t *testing.T) {
 		}
 	}
 }
+
+func TestIsSimilar(t *testing.T) {
+	tests := []struct {
+		data1    []int
+		data2    []int
+		expected bool
+	}{
+		{nil, nil, true},
+		{[]int{4, 2, 6, 1, 3, 5, 7}, []int{4, 2, 6, 1, 3, 5, 7}, true},
+		{[]int{4, 2, 6, 1, 3, 5, 7}, []int{4, 2, 6, 1, 3, 5}, false},
+		{[]int{4, 2, 6, 1, 3, 5}, []int{4, 2, 6, 1, 3, 5, 7}, false},
+		{[]int{4, 6, 2, 1, 3, 6, 7}, []int{4, 2, 6, 1, 3, 6, 7}, true},
+		{[]int{4, 2, 6, 1, 3, 5, 7}, []int{4, 2, 6, 1, 4, 5, 7}, false},
+	}
+
+	for i, test := range tests {
+		root1 := createBST(test.data1)
+		root2 := createBST(test.data2)
+		result := IsSimilar(root1, root2)
+		if result != test.expected {
+			t.Errorf("Test %d failed. Expected: %v, Got %v", i+1, test.expected, result)
+		}
+	}
+}

@@ -315,6 +315,19 @@ func IsSameTree(root *node, subRoot *node) bool {
 	return IsSameTree(root.Left, subRoot.Left) && IsSameTree(root.Right, subRoot.Right)
 }
 
+// means that the trees have the same structure with the possibility of swapping left and right children of a number of nodes
+func IsSimilar(a, b *node) bool {
+	if a == nil && b == nil {
+		return true
+	}
+
+	if a == nil || b == nil {
+		return false
+	}
+
+	return IsSimilar(a.Left, b.Left) && IsSimilar(a.Right, b.Right) || IsSimilar(a.Left, b.Right) && IsSimilar(a.Right, b.Left)
+}
+
 func isBST(root *node) bool {
 	if root == nil {
 		return true
