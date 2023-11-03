@@ -6,41 +6,41 @@ import (
 )
 
 type node struct {
-	Val   int
-	Left  *node
-	Right *node
+	val   int
+	left  *node
+	right *node
 }
 
 func New(val int) *node {
 	return &node{
-		Val:   val,
-		Left:  nil,
-		Right: nil,
+		val:   val,
+		left:  nil,
+		right: nil,
 	}
 }
 
 func (n *node) Insert(val int) {
-	if n.Val == val {
+	if n.val == val {
 		return
 	}
 
 	//add to left
-	if n.Val > val {
-		if n.Left == nil {
-			n.Left = &node{Val: val}
+	if n.val > val {
+		if n.left == nil {
+			n.left = &node{val: val}
 			return
 		}
-		n.Left.Insert(val)
+		n.left.Insert(val)
 		return
 	}
 
 	//add to right
-	if n.Right == nil {
-		n.Right = &node{Val: val}
+	if n.right == nil {
+		n.right = &node{val: val}
 		return
 	}
 
-	n.Right.Insert(val)
+	n.right.Insert(val)
 }
 
 func (n *node) Search(val int) bool {
@@ -49,15 +49,15 @@ func (n *node) Search(val int) bool {
 		return false
 	}
 
-	if n.Val == val {
+	if n.val == val {
 		return true
 	}
 
-	if n.Val > val {
-		return n.Left.Search(val)
+	if n.val > val {
+		return n.left.Search(val)
 	}
 
-	return n.Right.Search(val)
+	return n.right.Search(val)
 }
 
 func (n *node) Remove(val int) *node {
@@ -66,31 +66,31 @@ func (n *node) Remove(val int) *node {
 		return nil
 	}
 
-	if n.Val > val {
-		n.Left = n.Left.Remove(val)
+	if n.val > val {
+		n.left = n.left.Remove(val)
 		return n
 	}
 
-	if n.Val < val {
-		n.Right = n.Right.Remove(val)
+	if n.val < val {
+		n.right = n.right.Remove(val)
 		return n
 	}
 
-	if n.Left == nil && n.Right == nil {
+	if n.left == nil && n.right == nil {
 		return nil
 	}
 
-	if n.Left == nil {
-		return n.Right
+	if n.left == nil {
+		return n.right
 	}
 
-	if n.Right == nil {
-		return n.Left
+	if n.right == nil {
+		return n.left
 	}
 
-	lower := n.Right.Min()
-	n.Val = lower.Val
-	n.Right = n.Right.Remove(lower.Val)
+	lower := n.right.Min()
+	n.val = lower.val
+	n.right = n.right.Remove(lower.val)
 
 	return n
 }
@@ -100,23 +100,23 @@ func (n *node) Min() *node {
 		return nil
 	}
 
-	if n.Left == nil {
+	if n.left == nil {
 		return n
 	}
 
-	return n.Left.Min()
+	return n.left.Min()
 }
 
-func Max(root *node) int {
-	if root == nil {
-		return 0
+func (n *node) Max() *node {
+	if n == nil {
+		return nil
 	}
 
-	if root.Right == nil {
-		return root.Val
+	if n.right == nil {
+		return n
 	}
 
-	return Max(root.Right)
+	return n.right.Max()
 }
 
 // AscOrder returns slice of values in ascending order	InOrderTraversal
@@ -128,9 +128,9 @@ func (n *node) AscOrder() []int {
 
 	var result []int
 
-	result = append(result, n.Left.AscOrder()...)
-	result = append(result, n.Val)
-	result = append(result, n.Right.AscOrder()...)
+	result = append(result, n.left.AscOrder()...)
+	result = append(result, n.val)
+	result = append(result, n.right.AscOrder()...)
 
 	return result
 }
@@ -144,9 +144,9 @@ func (n *node) DestOrder() []int {
 
 	var result []int
 
-	result = append(result, n.Right.DestOrder()...)
-	result = append(result, n.Val)
-	result = append(result, n.Left.DestOrder()...)
+	result = append(result, n.right.DestOrder()...)
+	result = append(result, n.val)
+	result = append(result, n.left.DestOrder()...)
 
 	return result
 }
@@ -158,9 +158,9 @@ func (n *node) Copy() *node {
 	}
 
 	return &node{
-		Val:   n.Val,
-		Left:  n.Left.Copy(),
-		Right: n.Right.Copy(),
+		val:   n.val,
+		left:  n.left.Copy(),
+		right: n.right.Copy(),
 	}
 }
 
@@ -169,10 +169,10 @@ func (n *node) Mirror() *node {
 		return nil
 	}
 
-	n.Left, n.Right = n.Right, n.Left
+	n.left, n.right = n.right, n.left
 
-	n.Left.Mirror()
-	n.Right.Mirror()
+	n.left.Mirror()
+	n.right.Mirror()
 
 	return n
 }
@@ -183,11 +183,11 @@ func (n *node) Clean() {
 		return
 	}
 
-	n.Left.Clean()  //left
-	n.Right.Clean() //right
-	n.Val = 0       //action
-	n.Left = nil    //action
-	n.Right = nil   //action
+	n.left.Clean()  //left
+	n.right.Clean() //right
+	n.val = 0       //action
+	n.left = nil    //action
+	n.right = nil   //action
 }
 
 // LevelOrderTraversal is a BFS implementation
@@ -207,14 +207,14 @@ func (n *node) LevelOrderTraversal() [][]int {
 		for i := 0; i < levelSize; i++ {
 			current := queue[0]
 			queue = queue[1:]
-			currentLevel = append(currentLevel, current.Val)
+			currentLevel = append(currentLevel, current.val)
 
-			if current.Left != nil {
-				queue = append(queue, current.Left)
+			if current.left != nil {
+				queue = append(queue, current.left)
 			}
 
-			if current.Right != nil {
-				queue = append(queue, current.Right)
+			if current.right != nil {
+				queue = append(queue, current.right)
 			}
 		}
 		result = append(result, currentLevel)
@@ -229,14 +229,14 @@ func (n *node) LowestCommonAncestor(p, q *node) *node {
 		return nil
 	}
 
-	if n.Val > p.Val && n.Val > q.Val {
+	if n.val > p.val && n.val > q.val {
 		//lca is in left subtree
-		return n.Left.LowestCommonAncestor(p, q)
+		return n.left.LowestCommonAncestor(p, q)
 	}
 
-	if n.Val < p.Val && n.Val < q.Val {
+	if n.val < p.val && n.val < q.val {
 		//lca is in right subtree
-		return n.Right.LowestCommonAncestor(p, q)
+		return n.right.LowestCommonAncestor(p, q)
 	}
 
 	//lca is n, because n.Val is between p.Val and q.Val
@@ -258,15 +258,15 @@ func (n *node) LowestCommonAncestor2(p, q *node) *node {
 	// jako ze node moze byc LCA dla samego siebie
 	// czyli w tym kroku rekurencyjnie znalezlismy nasze p lub q
 	// które w nastepnym kroku pzypiszemy do leftLCA lub rightLCA
-	if n.Val == p.Val || n.Val == q.Val {
+	if n.val == p.val || n.val == q.val {
 		return n
 	}
 
 	// 3. Rekurencyjnie znajdujemy  LCA w lewym poddrzewie.
-	leftLCA := n.Left.LowestCommonAncestor2(p, q)
+	leftLCA := n.left.LowestCommonAncestor2(p, q)
 
 	// 4. Rekurencyjnie znajdujemy LCA w prawym poddrzewie.
-	rightLCA := n.Right.LowestCommonAncestor2(p, q)
+	rightLCA := n.right.LowestCommonAncestor2(p, q)
 
 	// 5. Jeśli znajdziemy LCA w obu poddrzewach, to bieżący węzeł jest LCA.
 	if leftLCA != nil && rightLCA != nil {
@@ -292,11 +292,11 @@ func IsSubTree(root *node, subRoot *node) bool {
 		return false
 	}
 
-	if root.Val == subRoot.Val && IsSameTree(root, subRoot) {
+	if root.val == subRoot.val && IsSameTree(root, subRoot) {
 		return true
 	}
 
-	return IsSubTree(root.Left, subRoot) || IsSubTree(root.Right, subRoot)
+	return IsSubTree(root.left, subRoot) || IsSubTree(root.right, subRoot)
 }
 
 func IsSameTree(root *node, subRoot *node) bool {
@@ -308,11 +308,24 @@ func IsSameTree(root *node, subRoot *node) bool {
 		return false
 	}
 
-	if root.Val != subRoot.Val {
+	if root.val != subRoot.val {
 		return false
 	}
 
-	return IsSameTree(root.Left, subRoot.Left) && IsSameTree(root.Right, subRoot.Right)
+	return IsSameTree(root.left, subRoot.left) && IsSameTree(root.right, subRoot.right)
+}
+
+func IsSimilar(root *node, subRoot *node) bool {
+	if root == nil && subRoot == nil {
+		return true
+	}
+
+	if root == nil || subRoot == nil {
+		return false
+	}
+
+	return IsSimilar(root.left, subRoot.left) && IsSimilar(root.right, subRoot.right) ||
+		IsSimilar(root.left, subRoot.right) && IsSimilar(root.right, subRoot.left)
 }
 
 // means that the trees have the same structure with the possibility of swapping left and right children of a number of nodes
@@ -333,15 +346,15 @@ func isBST(root *node) bool {
 		return true
 	}
 
-	if root.Left != nil && root.Left.Val > root.Val {
+	if root.left != nil && root.left.val > root.val {
 		return false
 	}
 
-	if root.Right != nil && root.Right.Val < root.Val {
+	if root.right != nil && root.right.val < root.val {
 		return false
 	}
 
-	return isBST(root.Left) && isBST(root.Right)
+	return isBST(root.left) && isBST(root.right)
 }
 
 func NodeDistance(root, p, q *node) int {
@@ -354,15 +367,15 @@ func distance(root, p *node) int {
 		return 0
 	}
 
-	if root.Val == p.Val {
+	if root.val == p.val {
 		return 0
 	}
 
-	if root.Val > p.Val {
-		return 1 + distance(root.Left, p)
+	if root.val > p.val {
+		return 1 + distance(root.left, p)
 	}
 
-	return 1 + distance(root.Right, p)
+	return 1 + distance(root.right, p)
 }
 
 func FindKSmallestInOrder(root *node, k int) []int {
@@ -379,11 +392,11 @@ func FindKSmallestInOrder(root *node, k int) []int {
 			return nil
 		}
 
-		inOrder(root.Left) //goToLeft
+		inOrder(root.left) //goToLeft
 
 		if len(result) < k {
-			result = append(result, root.Val) //action
-			inOrder(root.Right)               //goToRight
+			result = append(result, root.val) //action
+			inOrder(root.right)               //goToRight
 		}
 
 		return result
@@ -409,11 +422,11 @@ func FindKBiggstElements(root *node, k int) []int {
 			return nil
 		}
 
-		inOrder(root.Left) //goToLeft
+		inOrder(root.left) //goToLeft
 
 		if len(result) < k {
-			result = append(result, root.Val) //action
-			inOrder(root.Right)               //goToRight
+			result = append(result, root.val) //action
+			inOrder(root.right)               //goToRight
 		}
 
 		return result
@@ -438,13 +451,13 @@ func FindKEvenNodsInTheInterval(root *node, k, low, max int) []int {
 			return nil
 		}
 
-		inOrder(root.Left) //goToLeft
+		inOrder(root.left) //goToLeft
 
-		if root.Val >= low && root.Val <= max && root.Val%2 == 0 {
-			result = append(result, root.Val) //action
+		if root.val >= low && root.val <= max && root.val%2 == 0 {
+			result = append(result, root.val) //action
 		}
 
-		inOrder(root.Right) //goToRight
+		inOrder(root.right) //goToRight
 
 		return result
 	}
@@ -468,9 +481,9 @@ func Serialize(root *node) string {
 			return
 		}
 
-		result = append(result, fmt.Sprintf("%d", root.Val))
-		preOrder(root.Left)
-		preOrder(root.Right)
+		result = append(result, fmt.Sprintf("%d", root.val))
+		preOrder(root.left)
+		preOrder(root.right)
 	}
 	preOrder(root)
 
@@ -499,9 +512,9 @@ func Deserialize(data string) *node {
 		}
 
 		node := &node{}
-		fmt.Sscanf(val, "%d", &node.Val)
-		node.Left = buildTree()
-		node.Right = buildTree()
+		fmt.Sscanf(val, "%d", &node.val)
+		node.left = buildTree()
+		node.right = buildTree()
 
 		return node
 	}
@@ -522,9 +535,9 @@ func RebalanceBST(root *node) *node {
 			return
 		}
 
-		inOrder(root.Left)
-		nodes = append(nodes, root.Val)
-		inOrder(root.Right)
+		inOrder(root.left)
+		nodes = append(nodes, root.val)
+		inOrder(root.right)
 	}
 	inOrder(root)
 
@@ -538,9 +551,9 @@ func buildTree(nodes []int) *node {
 
 	mid := len(nodes) / 2
 
-	node := &node{Val: nodes[mid]}
-	node.Left = buildTree(nodes[:mid])
-	node.Right = buildTree(nodes[mid+1:])
+	node := &node{val: nodes[mid]}
+	node.left = buildTree(nodes[:mid])
+	node.right = buildTree(nodes[mid+1:])
 
 	return node
 }
@@ -550,7 +563,7 @@ func MaxDepth(root *node) int {
 		return 0
 	}
 
-	return 1 + max(MaxDepth(root.Left), MaxDepth(root.Right))
+	return 1 + max(MaxDepth(root.left), MaxDepth(root.right))
 }
 
 func MinDepth(root *node) int {
@@ -558,7 +571,7 @@ func MinDepth(root *node) int {
 		return 0
 	}
 
-	return 1 + min(MinDepth(root.Left), MinDepth(root.Right))
+	return 1 + min(MinDepth(root.left), MinDepth(root.right))
 }
 
 func MaxPathSum(root *node) int {
@@ -574,12 +587,12 @@ func MaxPathSum(root *node) int {
 			return 0
 		}
 
-		left := max(0, maxPathSum(root.Left))
-		right := max(0, maxPathSum(root.Right))
+		left := max(0, maxPathSum(root.left))
+		right := max(0, maxPathSum(root.right))
 
-		maxSum = max(maxSum, left+right+root.Val)
+		maxSum = max(maxSum, left+right+root.val)
 
-		return max(left, right) + root.Val
+		return max(left, right) + root.val
 	}
 	maxPathSum(root)
 
@@ -597,9 +610,9 @@ func PrintTree(node *node, prefix string, isLeft bool) {
 			prefix += "    "
 		}
 
-		fmt.Println(node.Val)
+		fmt.Println(node.val)
 
-		PrintTree(node.Left, prefix, true)
-		PrintTree(node.Right, prefix, false)
+		PrintTree(node.left, prefix, true)
+		PrintTree(node.right, prefix, false)
 	}
 }

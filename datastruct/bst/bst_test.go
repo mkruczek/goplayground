@@ -34,10 +34,10 @@ func TestNode_InsertSameValue_ShouldStoreOnce(t *testing.T) {
 
 	root.Insert(10)
 
-	if root.Left != nil {
+	if root.left != nil {
 		t.Errorf("expected left to be nil")
 	}
-	if root.Right != nil {
+	if root.right != nil {
 		t.Errorf("expected right to be nil")
 	}
 }
@@ -56,7 +56,7 @@ func TestNode_Remove(t *testing.T) {
 
 	PrintTree(root, "***", false)
 
-	if root.Right.Left.Val != 13 {
+	if root.right.left.val != 13 {
 		t.Errorf("expected right to be 12")
 	}
 }
@@ -75,7 +75,7 @@ func TestNode_Remove_Root(t *testing.T) {
 
 	PrintTree(root, "***", false)
 
-	if root.Right.Left.Val != 13 {
+	if root.right.left.val != 13 {
 		t.Errorf("expected right to be 12")
 	}
 }
@@ -90,9 +90,26 @@ func TestNode_Min(t *testing.T) {
 	root.Insert(12)
 	root.Insert(1)
 
-	mi := root.Min().Val
+	mi := root.Min().val
 
 	if mi != 1 {
+		t.Errorf("expected min to be 5")
+	}
+}
+
+func TestNode_Max(t *testing.T) {
+
+	root := New(10)
+
+	root.Insert(5)
+	root.Insert(15)
+	root.Insert(8)
+	root.Insert(12)
+	root.Insert(1)
+
+	mi := root.Max().val
+
+	if mi != 15 {
 		t.Errorf("expected min to be 5")
 	}
 }
@@ -190,11 +207,11 @@ func TestNode_Copy_ShouldNotBeSameInstance(t *testing.T) {
 		t.Errorf("expected to be different instances")
 	}
 
-	if copied.Left == root.Left {
+	if copied.left == root.left {
 		t.Errorf("expected to be different instances")
 	}
 
-	if copied.Right == root.Right {
+	if copied.right == root.right {
 		t.Errorf("expected to be different instances")
 	}
 }
@@ -209,15 +226,15 @@ func TestNode_Clean(t *testing.T) {
 
 	root.Clean()
 
-	if root.Left != nil {
+	if root.left != nil {
 		t.Errorf("expected left to be nil")
 	}
 
-	if root.Right != nil {
+	if root.right != nil {
 		t.Errorf("expected right to be nil")
 	}
 
-	if root.Val != 0 {
+	if root.val != 0 {
 		t.Errorf("expected val to be 0")
 	}
 }
@@ -254,59 +271,48 @@ func TestNode_LowestCommonAncestor(t *testing.T) {
 
 	lca := root.LowestCommonAncestor2(New(1), New(12))
 
-	if lca.Val != 10 {
+	if lca.val != 10 {
 		t.Errorf("expected lca to be 10")
 	}
 }
 
 func TestMaxValOnPath(t *testing.T) {
-	// Tworzymy testowe drzewo binarne.
+	// test tree
 	//        10
 	//       /  \
 	//      5    15
 	//     / \   / \
 	//    3   7 12  18
 	root := &node{
-		Val: 10,
-		Left: &node{
-			Val:   5,
-			Left:  &node{Val: 3},
-			Right: &node{Val: 7},
+		val: 10,
+		left: &node{
+			val:   5,
+			left:  &node{val: 3},
+			right: &node{val: 7},
 		},
-		Right: &node{
-			Val:   15,
-			Left:  &node{Val: 12},
-			Right: &node{Val: 18},
+		right: &node{
+			val:   15,
+			left:  &node{val: 12},
+			right: &node{val: 18},
 		},
 	}
 
-	// Oczekiwana maksymalna wartość na ścieżce od korzenia do liścia: 10
 	expected := 18
-	result := Max(root)
+	result := root.Max().val
 	if result != expected {
 		t.Errorf("Oczekiwano %d, otrzymano %d", expected, result)
 	}
 
-	// Test dla pustego drzewa.
-	result = Max(nil)
-	expected = 0
-	if result != expected {
-		t.Errorf("Oczekiwano %d, otrzymano %d", expected, result)
-	}
-
-	// Test dla drzewa z jednym węzłem.
-	singleNode := &node{Val: 42}
-	result = Max(singleNode)
+	singleNode := &node{val: 42}
+	result = singleNode.Max().val
 	expected = 42
 	if result != expected {
 		t.Errorf("Oczekiwano %d, otrzymano %d", expected, result)
 	}
-
-	// Dodaj inne testy według potrzeb.
 }
 
 func TestMinDepth(t *testing.T) {
-	// Tworzymy testowe drzewo binarne.
+	// testTree
 	//        10
 	//       /  \
 	//      5    15
@@ -315,20 +321,19 @@ func TestMinDepth(t *testing.T) {
 	//             /
 	//			  17
 	root := &node{
-		Val: 10,
-		Left: &node{
-			Val:   5,
-			Left:  &node{Val: 3},
-			Right: &node{Val: 7},
+		val: 10,
+		left: &node{
+			val:   5,
+			left:  &node{val: 3},
+			right: &node{val: 7},
 		},
-		Right: &node{
-			Val:   15,
-			Left:  &node{Val: 12},
-			Right: &node{Val: 18, Left: &node{Val: 17}},
+		right: &node{
+			val:   15,
+			left:  &node{val: 12},
+			right: &node{val: 18, left: &node{val: 17}},
 		},
 	}
 
-	// Oczekiwana minimalna głębokość: 2
 	expected := 3
 	result := MinDepth(root)
 	if result != expected {
@@ -341,22 +346,18 @@ func TestMinDepth(t *testing.T) {
 		t.Errorf("Oczekiwano %d, otrzymano %d", expected, result)
 	}
 
-	// Test dla pustego drzewa.
 	result = MinDepth(nil)
 	expected = 0
 	if result != expected {
 		t.Errorf("Oczekiwano %d, otrzymano %d", expected, result)
 	}
 
-	// Test dla drzewa z jednym węzłem.
-	singleNode := &node{Val: 42}
+	singleNode := &node{val: 42}
 	result = MinDepth(singleNode)
 	expected = 1
 	if result != expected {
 		t.Errorf("Oczekiwano %d, otrzymano %d", expected, result)
 	}
-
-	// Dodaj inne testy według potrzeb.
 }
 
 func TestFindKSmallestInOrder(t *testing.T) {
@@ -390,12 +391,12 @@ func createBST(data []int) *node {
 
 func insertBST(root *node, val int) *node {
 	if root == nil {
-		return &node{Val: val}
+		return &node{val: val}
 	}
-	if val < root.Val {
-		root.Left = insertBST(root.Left, val)
-	} else if val > root.Val {
-		root.Right = insertBST(root.Right, val)
+	if val < root.val {
+		root.left = insertBST(root.left, val)
+	} else if val > root.val {
+		root.right = insertBST(root.right, val)
 	}
 	return root
 }
