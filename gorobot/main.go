@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/go-vgo/robotgo"
+	"math/rand"
 	"time"
 )
 
@@ -12,7 +13,8 @@ func main() {
 		for {
 			x, y := robotgo.Location()
 			robotgo.Move(x+1, y+1)
-			time.Sleep(60 * time.Second)
+			st := sleepTime()
+			time.Sleep(st)
 		}
 	}()
 
@@ -30,5 +32,10 @@ func main() {
 	}()
 
 	<-done
+}
 
+// sleepTime - return random value between 240 and 300
+func sleepTime() time.Duration {
+	st := 240 + rand.Intn(60)
+	return time.Duration(st) * time.Second
 }
