@@ -22,7 +22,7 @@ func main() {
 	go func() {
 		for {
 			x, y := robotgo.Location()
-			if x == 0 && y == 1079 {
+			if x == 0 && y == 0 {
 				fmt.Println("done")
 				done <- true
 			}
