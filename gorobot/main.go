@@ -32,7 +32,7 @@ func main() {
 	<-done
 }
 
-// sleepTime - return random value between 240 and 300
+// sleepTime - return random value between 240 and 300 seconds
 func sleepTime() time.Duration {
 	st := 240 + rand.Intn(60)
 	return time.Duration(st) * time.Second
