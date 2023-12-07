@@ -13,5 +13,5 @@ func main() {
 	fmt.Printf("x=%X // hexadecimal \n", x)
 
 	fmt.Printf("x=%c // char \n", x)
-	fmt.Printf("x=q%q // quoted char \n", x)
+	fmt.Printf("x=%q // quoted char \n", x)
 }
