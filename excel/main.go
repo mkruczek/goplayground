@@ -80,8 +80,8 @@ func addHeader(f *excelize.File) error {
 func fillData(f *excelize.File) (err error) {
 
 	defer func() {
-		if err := recover(); err != nil {
-			err = fmt.Errorf("recovered from panic: %v", err)
+		if e := recover(); e != nil {
+			err = fmt.Errorf("recovered from panic: %v", e)
 		}
 	}()
 
