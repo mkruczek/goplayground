@@ -77,7 +77,13 @@ func addHeader(f *excelize.File) error {
 	return nil
 }
 
-func fillData(f *excelize.File) {
+func fillData(f *excelize.File) (err error) {
+
+	defer func() {
+		if err := recover(); err != nil {
+			err = fmt.Errorf("recovered from panic: %v", err)
+		}
+	}()
 
 	for i := 3; i < numbersOfRows+3; i++ {
 		f.SetCellValue(sheetName, fmt.Sprintf("A%d", i), "aaaaaaaaaaa")
@@ -92,4 +98,5 @@ func fillData(f *excelize.File) {
 		f.SetCellValue(sheetName, fmt.Sprintf("J%d", i), "jjjjjjjjjjj")
 	}
 
+	return nil
 }
