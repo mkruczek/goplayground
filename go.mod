@@ -5,6 +5,7 @@ go 1.21
 require (
 	github.com/go-vgo/robotgo v0.110.0
 	github.com/gocolly/colly v1.2.0
+	github.com/lib/pq v1.10.9
 	github.com/xuri/excelize/v2 v2.8.0
 )
 
