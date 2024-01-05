@@ -8,12 +8,16 @@ import (
 
 func buildSQLQuery(params url.Values) (string, []any) {
 	sqlQuery := "SELECT * FROM table"
-	var args []interface{}
+	var args []any
 
 	whereClause := make([]string, 0)
 	for key, values := range params {
 		if strings.HasPrefix(key, "where") {
-			whereClause = append(whereClause, fmt.Sprintf("%s = ?", strings.TrimPrefix(key, "where_")))
+			if values[0] == "true" || values[0] == "false" {
+				whereClause = append(whereClause, fmt.Sprintf("%s IS ?", strings.TrimPrefix(key, "where_")))
+			} else {
+				whereClause = append(whereClause, fmt.Sprintf("%s = ?", strings.TrimPrefix(key, "where_")))
+			}
 			args = append(args, values[0])
 		}
 	}
@@ -30,7 +34,7 @@ func buildSQLQuery(params url.Values) (string, []any) {
 }
 
 func main() {
-	rawURL := "http://example.com/api?where_id=1&where_name=John&sort=id%20DESC"
+	rawURL := "http://example.com/api?where_id=1&where_name=John&where_active=true&sort=id%20DESC"
 	parsedURL, err := url.Parse(rawURL)
 	if err != nil {
 		fmt.Println(err)
