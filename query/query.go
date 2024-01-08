@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func buildSQLQuery(params url.Values) (string, []any) {
+func buildSQLQuery(params url.Values, operator string) (string, []any) {
 	sqlQuery := "SELECT * FROM table"
 	var args []any
 
@@ -23,7 +23,7 @@ func buildSQLQuery(params url.Values) (string, []any) {
 	}
 
 	if len(whereClause) > 0 {
-		sqlQuery = fmt.Sprintf("%s WHERE %s", sqlQuery, strings.Join(whereClause, " AND "))
+		sqlQuery = fmt.Sprintf("%s WHERE %s", sqlQuery, strings.Join(whereClause, " "+operator+" "))
 	}
 
 	if sort, ok := params["sort"]; ok {
@@ -43,7 +43,7 @@ func main() {
 
 	params := parsedURL.Query()
 
-	sqlQuery, args := buildSQLQuery(params)
+	sqlQuery, args := buildSQLQuery(params, "OR")
 	fmt.Println(sqlQuery)
 	fmt.Println(args)
 }
