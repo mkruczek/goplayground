@@ -68,11 +68,11 @@ func (list *LinkedList) Remove(data int) {
 	}
 }
 
-func (list *LinkedList) Contains(data int) bool {
+func (list *LinkedList) Search(data int) (*Node, bool) {
 	for node := list.Head; node != nil; node = node.Next {
 		if node.Data == data {
-			return true
+			return node, true
 		}
 	}
-	return false
+	return nil, false
 }
