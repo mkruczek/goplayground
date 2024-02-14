@@ -1,6 +1,6 @@
 module goplayground
 
-go 1.21
+go 1.22
 
 require (
 	github.com/go-vgo/robotgo v0.110.0
